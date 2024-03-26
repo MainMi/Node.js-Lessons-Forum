@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mykyta Havrylenko Profile</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e7eaf3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 40px;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 15px;
+            padding: 60px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            max-width: 1100px;
+            width: 80%;
+            text-align: center;
+        }
+        .profile-photo img {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            border: 5px solid #2e4a66;
+            margin-bottom: 30px;
+            object-fit: cover; /* Add this line to ensure the image covers the area */
+        }
+        h1 {
+            margin: 0;
+            color: #2e4a66;
+            font-size: 48px;
+            font-weight: bold;
+        }
+        h2 {
+            margin-top: 10px;
+            margin-bottom: 30px;
+            font-size: 36px;
+            color: #4a6075;
+            font-weight: normal;
+        }
+        .info p {
+            margin: 10px 0;
+            color: #4a6075;
+            font-size: 24px;
+        }
+        .info strong {
+            color: #2e4a66;
+            font-weight: bold;
+        }
+        /* Adding a hover effect to email and phone for interactivity */
+        .info a {
+            color: #2e4a66;
+            text-decoration: none;
+            transition: text-decoration 0.3s;
+        }
+        .info a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="profile-photo">
+        <!-- Replace 'mykyta-photo.jpg' with the actual image file of Mykyta Havrylenko -->
+        <img src="FELV-cat.jpg" alt="Mykyta Havrylenko">
+    </div>
+    <h1>Mykyta Havrylenko</h1>
+    <h2>Computer Engineering Student</h2>
+    <div class="info">
+        <p><strong>Faculty:</strong> Computer Engineering</p>
+        <p><strong>Course:</strong> 2</p>
+        <p><strong>Group:</strong> IP-24</p>
+        <p><strong>Email:</strong> <a href="mailto:mykyta@example.com">mykyta@example.com</a></p>
+        <p><strong>Phone:</strong> <a href="tel:+1234567893">+1234567893</a></p>
+    </div>
+</div>
+
+</body>
+</html>

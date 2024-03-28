@@ -1,0 +1,105 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f7f7f7;
+    color: #333;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+header {
+    background-color: #e6fff5;
+    color: #333;
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+}
+
+nav {
+    margin-top: 20px;
+    text-align: center;
+    background: #fff;
+    padding: 10px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+ul {
+    list-style-type: none;
+}
+
+nav ul li {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+nav ul li a {
+    color: #333;
+    text-decoration: none;
+    padding: 8px 15px;
+    border: 1px solid #333;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+nav ul li a:hover,
+nav ul li a:focus {
+    background-color: #5cb85c;
+    color: #fff;
+    border-color: #5cb85c;
+}
+
+main {
+    padding: 20px;
+    background: #fff;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+ul {
+    max-width: 800px;
+    margin: 20px auto;
+    /* Center the list */
+    padding: 20px;
+    background-color: #e6fff5;
+    /* Light background for the content area */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+ul li {
+    border-bottom: 1px solid #ddd;
+    /* Separator for each student */
+    padding: 10px 0;
+}
+
+ul li:last-child {
+    border-bottom: none;
+}
+
+ul li strong {
+    color: #333;
+}
+
+footer {
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 20px;
+    font-size: 0.8em;
+    color: #666;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto 20px;
+}

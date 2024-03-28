@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><% studentInfo.fullname %> Profile</title>
+    <link rel="stylesheet" href="/css/student-overview.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="profile-photo">
+        <img src="<%= '/images/' + studentInfo.photo %>" alt="<%= studentInfo.fullname %>">
+    </div>
+    <h1><%= studentInfo.fullname %></h1>
+    <h2><%= studentInfo.faculty %> Student</h2>
+    <div class="info">
+        <p><strong>Course:</strong> <%= studentInfo.course %></p>
+        <p><strong>Group:</strong> <%= studentInfo.group %></p>
+        <p><strong>Email:</strong> <a href="mailto:<%= studentInfo.email %>"><%= studentInfo.email %></a></p>
+        <p><strong>Phone:</strong> <a href="tel:+<%= studentInfo.phone %>"><%= studentInfo.phone %></a></p>
+    </div>
+</div>
+
+</body>
+</html>

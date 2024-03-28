@@ -1,13 +1,9 @@
-/* styles.css */
-
-/* Reset CSS */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Body styles */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f7f7f7;
@@ -16,25 +12,27 @@ body {
     line-height: 1.6;
 }
 
-/* Header styles */
 header {
-    background-color: #e6fff5; /* Soft green background for a fresh feel */
+    background-color: #e6fff5;
     color: #333;
     padding: 20px 0;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Navigation styles */
+h1 {
+    text-align: center;
+}
+
 nav {
     margin-top: 20px;
     text-align: center;
     background: #fff;
     padding: 10px 0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-nav ul {
+ul {
     list-style-type: none;
 }
 
@@ -54,44 +52,43 @@ nav ul li a {
 
 nav ul li a:hover,
 nav ul li a:focus {
-    background-color: #5cb85c; /* Green for hover state to match the banner */
+    background-color: #5cb85c;
     color: #fff;
     border-color: #5cb85c;
 }
 
-/* Main content styles */
 main {
     padding: 20px;
     background: #fff;
     margin-top: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Student list styles */
 ul {
-    max-width: 800px; /* Set a max-width for the list */
-    margin: 20px auto; /* Center the list */
+    max-width: 800px;
+    margin: 20px auto;
+    /* Center the list */
     padding: 20px;
-    background-color: #e6fff5; /* Light background for the content area */
-    border-radius: 8px; /* Rounded corners for the list container */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Shadow for depth */
+    background-color: #e6fff5;
+    /* Light background for the content area */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 ul li {
-    border-bottom: 1px solid #ddd; /* Separator for each student */
+    border-bottom: 1px solid #ddd;
+    /* Separator for each student */
     padding: 10px 0;
 }
 
 ul li:last-child {
-    border-bottom: none; /* Remove bottom border for the last item */
+    border-bottom: none;
 }
 
-/* Information titles */
 ul li strong {
-    color: #333; /* Dark text for emphasis */
+    color: #333;
 }
 
-/* Footer styles */
 footer {
     text-align: center;
     padding: 20px 0;
@@ -100,7 +97,6 @@ footer {
     color: #666;
 }
 
-/* Image styles */
 img {
     max-width: 100%;
     height: auto;

@@ -1,19 +1,25 @@
 const express = require('express');
 const router = express.Router();
 
-// Define route for rendering EJS template
+const studentsInfo = require('../constants/studentsInfo.js');
+
 router.get('/', (req, res) => {
     res.render('home', { title: 'Home Page', message: 'Welcome to our website' });
 });
 
-router.get('/students', function(req, res) {
-    res.render('students'); // renders students.ejs
-  });
-
-// Define route for sending text response
-router.get('/text', (req, res) => {
-    res.send('This is the home page');
+router.get('/students', (req, res) => {
+    res.render('students', {studentsInfo});
 });
 
-// Export router
+router.get('/student/:studentSurname', (req, res) => {
+    const studentSurname = req.params.studentSurname;
+    const studentInfo = studentsInfo[studentSurname];
+
+    if (studentInfo?.fullname) {
+        res.render('student', { studentInfo });
+    } else {
+        res.render('404');
+    }
+});
+
 module.exports = router;

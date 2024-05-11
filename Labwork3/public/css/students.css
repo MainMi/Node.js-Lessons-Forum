@@ -1,0 +1,61 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f7f7f7;
+    color: #333;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+header {
+    background-color: #e6fff5;
+    color: #333;
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+.students-list {
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.students-list .student-item {
+    display: inline-block;
+    width: 100%;
+    list-style: none;
+    padding: 20px;
+    background-color: #e6fff5;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    max-width: 800px;
+}
+
+.students-list .student-item a {
+    color: #333;
+    text-decoration: none;
+    padding: 4px 8px;
+    border: 1px solid #333;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.students-list .student-item a:hover,
+.students-list .student-item a:focus {
+    background-color: #5cb85c;
+    color: #fff;
+    border-color: #5cb85c;
+}

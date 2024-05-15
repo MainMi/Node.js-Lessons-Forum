@@ -1,0 +1,27 @@
+<%- include('../components/head.ejs', { title, cssPath }) %> 
+<body>
+
+<h1><%= message %></h1>
+
+<ul class="students-list">
+    <% Object.entries(studentsInfo).forEach(([student, studentsInfo]) => { %>
+        <li class="student-item">
+            <strong>Name:</strong>
+            <a href="/students/<%= student %>"><%= studentsInfo.fullname %></a>
+            <span>|</span>
+            <a href="/students/sync/<%= student %>">Sync</a>
+            <a href="/students/callback/<%= student %>">Callback</a>
+            <a href="/students/promise/<%= student %>">Promise</a>
+            <a href="/students/async/<%= student %>">Async</a>
+            <br>
+            <strong>Faculty:</strong> <%= studentsInfo.faculty %><br>
+            <strong>Course:</strong> <%= studentsInfo.course %><br>
+            <strong>Group:</strong> <%= studentsInfo.group %><br>
+            <strong>Email:</strong> <%= studentsInfo.email %><br>
+            <strong>Phone:</strong> <%= studentsInfo.phone %>
+        </li>
+    <% }); %>
+</ul>
+
+</body>
+</html>

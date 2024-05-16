@@ -18,16 +18,35 @@
    ```
    node app.js
    ```
-## Screenshots of App
-### Main page
-<img width="1280" alt="image" src="https://github.com/MainMi/Node.js-Lessons-Forum/assets/40457162/dc795ba6-6260-4a42-9908-91da4885f48f">
 
-### Team members page
-<img width="1280" alt="image" src="https://github.com/MainMi/Node.js-Lessons-Forum/assets/40457162/0826ba72-2196-4ce8-84f6-b1615ed317ef">
+## Screenshots of the reworked students page
 
-### Team member example pages
-<img width="1280" alt="image" src="https://github.com/MainMi/Node.js-Lessons-Forum/assets/40457162/700abb36-e4e9-49f5-8a78-05a7dfa041ee">
-<img width="1280" alt="image" src="https://github.com/MainMi/Node.js-Lessons-Forum/assets/40457162/b28c6828-5e06-44e0-bf57-8f6afcdcf904">
+![Screenshot](screenshots/1.jpg)
+![Screenshot](screenshots/2.jpg)
+![Screenshot](screenshots/3.jpg)
 
-### Custom 404 error page
-<img width="1280" alt="image" src="https://github.com/MainMi/Node.js-Lessons-Forum/assets/40457162/2b68d38e-2ab2-4425-9739-1e91eacf2fe4">
+## Screenshots of out backend
+
+1. User registration and auth
+
+![Screenshot](screenshots/4.jpg)
+![Screenshot](screenshots/5.jpg)
+![Screenshot](screenshots/6.jpg)
+
+2. Forum topics CRUD operations
+
+![Screenshot](screenshots/7.jpg)
+![Screenshot](screenshots/8.jpg)
+![Screenshot](screenshots/9.jpg)
+![Screenshot](screenshots/10.jpg)
+
+3. Forum comments CRUD operations
+
+![Screenshot](screenshots/11.jpg)
+![Screenshot](screenshots/12.jpg)
+![Screenshot](screenshots/13.jpg)
+![Screenshot](screenshots/14.jpg)
+
+## Custom 404 page
+
+![Screenshot](screenshots/15.jpg)

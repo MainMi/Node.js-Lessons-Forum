@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 const { commentController } = require('../../controller');
-const { authMiddleware, topicMiddleware, commentMiddleware } = require('../../middleware');
+const { authMiddleware, topicMiddleware, commentMiddleware, paginatorMiddleware } = require('../../middleware');
 
 router.post('/:topicId/add',
     authMiddleware.checkAccessToken,
@@ -16,9 +16,17 @@ router.get('/:topicId/:commentId',
     authMiddleware.authIfTokenProvided,
     commentMiddleware.isCommentParamsValid,
     topicMiddleware.getTopicInfo,
-    topicMiddleware.isTopicNotDeleted,
     commentMiddleware.getCommentInfo,
     commentController.getComment
+);
+
+router.get('/:topicId',
+    authMiddleware.authIfTokenProvided,
+    topicMiddleware.isTopicParamsValid,
+    paginatorMiddleware.isPaginatedParamsValid,
+    paginatorMiddleware.isAdminIfDeletedDataRequested,
+    topicMiddleware.getTopicInfo,
+    commentController.getCommentsPaginated
 );
 
 router.put('/:topicId/:commentId',

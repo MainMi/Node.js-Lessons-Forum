@@ -30,5 +30,13 @@ module.exports = {
         await topicService.editTopic(topicId, user.userId, title, text);
 
         res.json('Topic edited successfully');
+    },
+
+    getTopicsPaginated: async (req, res) => {
+        const { page, pageSize, skipDeleted } = req.query;
+
+        const topics = await topicService.getTopicsPaginated(page, pageSize, skipDeleted);
+
+        res.json(topics);
     }
 };

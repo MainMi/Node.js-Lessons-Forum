@@ -10,6 +10,8 @@ const {
     WRONG_USERNAME_OR_PASSWORD
 } = require('../error/errorMsg');
 
+const isUserAdmin = (req) => !!req?.authUser?.user?.isAdmin;
+
 module.exports = {
     isValidUser: (req, res, next) => {
         try {
@@ -87,9 +89,19 @@ module.exports = {
 
     isAdmin: (req, res, next) => {
         try {
-            const isAdmin = !!req.authUser.user.isAdmin;
+            if (!isUserAdmin(req)) {
+                throw new ApiError(...Object.values(ACCESS_DENIED));
+            }
 
-            if (!isAdmin) {
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    checkIfAdminDynamically: (param1, param2) => (req, res, next) => {
+        try {
+            if (req?.param1?.param2 && !isUserAdmin(req)) {
                 throw new ApiError(...Object.values(ACCESS_DENIED));
             }
 

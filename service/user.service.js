@@ -1,20 +1,60 @@
-const { dbRequest, dbInsertRequest } = require('../helpers');
+const sequelize = require('sequelize');
+const { User } = require('../models');
 
 module.exports = {
-    createUser: (username, email, hashedPassword, isAdmin=false) => dbInsertRequest(
-        'INSERT INTO users (username, email, hashedPassword, isAdmin) VALUES (?, ?, ?, ?)',
-        [username, email, hashedPassword, isAdmin]
-    ).then((userId) => ({
-        userId,
-        username,
-        email,
-        hashedPassword,
-        isAdmin
-    })),
+    createUser: async (username, email, hashedPassword, isAdmin = false) => {
+        try {
+            const createdUser = await User.create({
+                username,
+                email,
+                hashedPassword,
+                isAdmin
+            });
 
-    getUser: (userId) => dbRequest('SELECT * FROM users WHERE userId = ?', [userId]),
+            return createdUser;
+        } catch (error) {
+            throw new Error('Error creating user: ' + error.message);
+        }
+    },
 
-    findUserByUsername: (username) => dbRequest('SELECT * FROM users WHERE username = ?', [username]),
+    getUser: async (userId) => {
+        try {
+            const user = await User.findOne({
+                where: { userId }
+            });
 
-    isUserExists: (username, email) => dbRequest('SELECT 1 FROM users WHERE username = ? OR email = ?', [username, email])
+            return user;
+        } catch (error) {
+            throw new Error('Error getting user: ' + error.message);
+        }
+    },
+
+    findUserByUsername: async (username) => {
+        try {
+            const user = await User.findOne({
+                where: { username }
+            });
+
+            return user;
+        } catch (error) {
+            throw new Error('Error finding user by username: ' + error.message);
+        }
+    },
+
+    isUserExists: async (username, email) => {
+        try {
+            const user = await User.findOne({
+                where: {
+                    [sequelize.Op.or]: [
+                        { username },
+                        { email }
+                    ]
+                }
+            });
+
+            return !!user;
+        } catch (error) {
+            throw new Error('Error checking if user exists: ' + error.message);
+        }
+    }
 };

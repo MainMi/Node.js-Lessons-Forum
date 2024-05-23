@@ -1,25 +1,86 @@
-const { dbRequest, dbInsertRequest } = require('../helpers');
+const { Topic } = require('../models');
 
 module.exports = {
-    createTopic: (userId, title, text) => dbInsertRequest(
-        'INSERT INTO topics (userId, title, text) VALUES (?, ?, ?)',
-        [userId, title, text]
-    ).then((topicId) => ({
-        topicId,
-        userId,
-        title,
-        text
-    })),
+    createTopic: async (userId, title, text) => {
+        try {
+            const createdTopic = await Topic.create({
+                userId,
+                title,
+                text
+            });
 
-    getTopic: (topicId) => dbRequest('SELECT * FROM topics WHERE topicId = ?', [topicId]),
+            return createdTopic;
+        } catch (error) {
+            throw new Error('Error creating topic: ' + error.message);
+        }
+    },
 
-    deleteTopic: (topicId, deletedByUser) => dbRequest(
-        'UPDATE topics SET deletedByUser = ?, deletedTimestamp = CURRENT_TIMESTAMP WHERE topicId = ?',
-        [deletedByUser, topicId]
-    ),
+    getTopic: async (topicId) => {
+        try {
+            const topic = await Topic.findOne({
+                where: { topicId }
+            });
 
-    editTopic: (topicId, editedByUser, newTitle, newText) => dbRequest(
-        'UPDATE topics SET title = ?, text = ?, editedByUser = ?, lastEditTimestamp = CURRENT_TIMESTAMP WHERE topicId = ?',
-        [newTitle, newText, editedByUser, topicId]
-    )
-}
+            return topic;
+        } catch (error) {
+            throw new Error('Error getting topic: ' + error.message);
+        }
+    },
+
+    getTopicsPaginated: async (page, pageSize, skipDeleted = true) => {
+        try {
+            const offset = (page - 1) * pageSize;
+            const whereClause = skipDeleted ? { deletedByUser: null } : {};
+
+            const totalCount = await Topic.count({ where: whereClause });
+            const totalPages = Math.ceil(totalCount / pageSize);
+
+            const topics = await Topic.findAll({
+                where: whereClause,
+                limit: pageSize,
+                offset: offset
+            });
+
+            const metadata = {
+                totalCount,
+                totalPages,
+                pageSize,
+                currentPage: page
+            };
+
+            return { topics, metadata };
+        } catch (error) {
+            throw new Error('Error getting paginated topics: ' + error.message);
+        }
+    },
+
+    deleteTopic: async (topicId, deletedByUser) => {
+        try {
+            await Topic.update({
+                deletedByUser
+            }, {
+                where: { topicId }
+            });
+
+            return true;
+        } catch (error) {
+            throw new Error('Error deleting topic: ' + error.message);
+        }
+    },
+
+    editTopic: async (topicId, editedByUser, newTitle, newText) => {
+        try {
+            await Topic.update({
+                title: newTitle,
+                text: newText,
+                editedByUser
+            }, {
+                where: { topicId }
+            });
+
+            return true;
+        } catch (error) {
+            throw new Error('Error editing topic: ' + error.message);
+        }
+    }
+};

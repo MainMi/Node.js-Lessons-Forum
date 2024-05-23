@@ -7,11 +7,34 @@ dotenv.config({ path: path.join(__dirname, '.env') });
 const app = express();
 const config = require('./config/config');
 const renderType = require('./constants/renderType');
+const sequelize = require('./database')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.set('view engine', 'ejs');
+
+const { User, Topic, Comment, OAuth } = require('./models');
+
+User.hasMany(Topic, { foreignKey: 'userId' });
+Topic.belongsTo(User, { foreignKey: 'userId' });
+
+User.hasMany(Comment, { foreignKey: 'userId' });
+Comment.belongsTo(User, { foreignKey: 'userId' });
+
+Topic.hasMany(Comment, { foreignKey: 'topicId' });
+Comment.belongsTo(Topic, { foreignKey: 'topicId' });
+
+User.hasMany(OAuth, { foreignKey: 'userId' });
+OAuth.belongsTo(User, { foreignKey: 'userId' });
+
+sequelize.sync({ force: false })
+    .then(() => {
+        console.log('Database synchronized.');
+    })
+    .catch(error => {
+        console.error('Error synchronizing database:', error);
+    });
 
 const { apiRouter, frontendRouter } = require('./router');
 app.use('/api', apiRouter);

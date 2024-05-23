@@ -1,31 +1,96 @@
-const { dbRequest, dbInsertRequest } = require('../helpers');
+const sequelize = require('sequelize');
+const { Comment } = require('../models');
 
 module.exports = {
-    addComment: (userId, topicId, text) => dbRequest(
-        'SELECT COALESCE(MAX(commentId), 0) + 1 as nextCommentId FROM comments WHERE topicId = ?',
-        [topicId]
-    ).then(({ nextCommentId }) => dbInsertRequest(
-        'INSERT INTO comments (userId, topicId, commentId, text) VALUES (?, ?, ?, ?)',
-        [userId, topicId, nextCommentId, text]
-    ).then(() => ({
-        topicId,
-        commentId: nextCommentId,
-        userId,
-        text
-    }))),
+    addComment: async (userId, topicId, text) => {
+        try {
+            const { dataValues: { maxCommentId }} = await Comment.findOne({
+                attributes: [
+                    [sequelize.fn('COALESCE', sequelize.fn('MAX', sequelize.col('commentId')), 0), 'maxCommentId']
+                ],
+                where: { topicId }
+            });
 
-    getComment: (topicId, commentId) => dbRequest(
-        'SELECT * FROM comments WHERE topicId = ? AND commentId = ?',
-        [topicId, commentId]
-    ),
+            const nextCommentId = maxCommentId + 1;
 
-    deleteComment: (topicId, commentId, deletedByUser) => dbRequest(
-        'UPDATE comments SET deletedByUser = ?, deletedTimestamp = CURRENT_TIMESTAMP WHERE topicId = ? AND commentId = ?',
-        [deletedByUser, topicId, commentId]
-    ),
+            const comment = await Comment.create({
+                userId,
+                topicId,
+                commentId: nextCommentId,
+                text
+            });
 
-    editComment: (topicId, commentId, editedByUser, newText) => dbRequest(
-        'UPDATE comments SET text = ?, editedByUser = ?, lastEditTimestamp = CURRENT_TIMESTAMP WHERE topicId = ? AND commentId = ?',
-        [newText, editedByUser, topicId, commentId]
-    )
+            return comment;
+        } catch (error) {
+            throw new Error('Error adding comment: ' + error.message);
+        }
+    },
+
+    getComment: async (topicId, commentId) => {
+        try {
+            const comment = await Comment.findOne({
+                where: { topicId, commentId }
+            });
+
+            return comment;
+        } catch (error) {
+            throw new Error('Error getting comment: ' + error.message);
+        }
+    },
+
+    getCommentsPaginated: async (topicId, page, pageSize, skipDeleted = true) => {
+        try {
+            const offset = (page - 1) * pageSize;
+            const whereClause = skipDeleted ? { deletedByUser: null } : {};
+
+            const totalCount = await Comment.count({ where: { topicId, ...whereClause } });
+            const totalPages = Math.ceil(totalCount / pageSize);
+
+            const comments = await Comment.findAll({
+                where: { topicId, ...whereClause },
+                limit: pageSize,
+                offset: offset
+            });
+
+            const metadata = {
+                totalCount,
+                totalPages,
+                pageSize,
+                currentPage: page
+            };
+
+            return { comments, metadata };
+        } catch (error) {
+            throw new Error('Error getting paginated comments: ' + error.message);
+        }
+    },
+
+    deleteComment: async (topicId, commentId, deletedByUser) => {
+        try {
+            await Comment.update({
+                deletedByUser
+            }, {
+                where: { topicId, commentId }
+            });
+
+            return true;
+        } catch (error) {
+            throw new Error('Error deleting comment: ' + error.message);
+        }
+    },
+
+    editComment: async (topicId, commentId, editedByUser, newText) => {
+        try {
+            await Comment.update({
+                text: newText,
+                editedByUser
+            }, {
+                where: { topicId, commentId }
+            });
+
+            return true;
+        } catch (error) {
+            throw new Error('Error editing comment: ' + error.message);
+        }
+    }
 };

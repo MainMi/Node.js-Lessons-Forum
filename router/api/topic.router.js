@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 const { topicController } = require('../../controller');
-const { authMiddleware, topicMiddleware } = require('../../middleware');
+const { authMiddleware, topicMiddleware, paginatorMiddleware } = require('../../middleware');
 
 router.post('/create',
     authMiddleware.checkAccessToken,
@@ -34,6 +34,13 @@ router.get('/:topicId',
     topicMiddleware.isTopicParamsValid,
     topicMiddleware.getTopicInfo,
     topicController.getTopic
+);
+
+router.get('/',
+    authMiddleware.authIfTokenProvided,
+    paginatorMiddleware.isPaginatedParamsValid,
+    paginatorMiddleware.isAdminIfDeletedDataRequested,
+    topicController.getTopicsPaginated
 );
 
 module.exports = router;

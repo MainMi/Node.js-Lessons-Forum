@@ -4,5 +4,6 @@ module.exports = {
     createTopicValidator: require('./createTopic.validator'),
     getTopicValidator: require('./getTopic.validator'),
     addCommentValidator: require('./addComment.validator'),
-    getCommentValidator: require('./getComment.validator')
+    getCommentValidator: require('./getComment.validator'),
+    getPaginatedValidator: require('./getPaginated.validator')
 };

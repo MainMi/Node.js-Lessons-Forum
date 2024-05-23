@@ -3,27 +3,19 @@ const jwt = require('jsonwebtoken');
 
 const ApiError = require('../error/ErrorHandler');
 
-const { dbRequest } = require('../helpers');
-
-const {
-    ACCESS_TOKEN_SECRET,
-    REFRESH_TOKEN_SECRET
-} = require('../config/config');
-
+const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = require('../config/config');
+const { WRONG_USERNAME_OR_PASSWORD, NOT_VALID_TOKEN } = require('../error/errorMsg');
 const { ACCESS } = require('../constants/tokenType.enum');
 
-const {
-    WRONG_USERNAME_OR_PASSWORD,
-    NOT_VALID_TOKEN
-} = require('../error/errorMsg');
+const { OAuth } = require('../models');
 
 module.exports = {
     hashPassword: (password) => bcrypt.hash(password, 10),
 
     comparePassword: async (password, hashPassword) => {
-        const isPasswordEquels = await bcrypt.compare(password, hashPassword);
+        const isPasswordEqual = await bcrypt.compare(password, hashPassword);
 
-        if (!isPasswordEquels) {
+        if (!isPasswordEqual) {
             throw new ApiError(...Object.values(WRONG_USERNAME_OR_PASSWORD));
         }
     },
@@ -31,18 +23,20 @@ module.exports = {
     generateTokenPair: (encodeData) => {
         const accessToken = jwt.sign(encodeData, ACCESS_TOKEN_SECRET, { expiresIn: '30m' });
         const refreshToken = jwt.sign(encodeData, REFRESH_TOKEN_SECRET, { expiresIn: '30d' });
+
         return { accessToken, refreshToken };
     },
 
-    createOauth: (userId, tokenPair) => dbRequest(
-        'INSERT INTO oauth (userId, accessToken, refreshToken) VALUES (?, ?, ?)',
-        [userId, tokenPair.accessToken, tokenPair.refreshToken]
-    ),
+    createOauth: async (userId, tokenPair) => {
+        return await OAuth.create({
+            userId: userId,
+            accessToken: tokenPair.accessToken,
+            refreshToken: tokenPair.refreshToken
+        });
+    },
 
     validateToken: (token, tokenType = ACCESS) => {
-        const tokenTypeKey = (tokenType === ACCESS)
-            ? ACCESS_TOKEN_SECRET
-            : REFRESH_TOKEN_SECRET;
+        const tokenTypeKey = (tokenType === ACCESS) ? ACCESS_TOKEN_SECRET : REFRESH_TOKEN_SECRET;
         try {
             return jwt.verify(token, tokenTypeKey);
         } catch (e) {
@@ -50,11 +44,19 @@ module.exports = {
         }
     },
 
-    deleteTokensForUser: (userId) => dbRequest('DELETE FROM oauth WHERE userId = ?', [userId]),
+    deleteTokensForUser: async (userId) => {
+        await OAuth.destroy({ where: { userId: userId } });
+    },
 
-    deleteTokenPair: (tokenPairId) => dbRequest('DELETE FROM oauth WHERE tokenPairId = ?', [tokenPairId]),
+    deleteTokenPair: async (tokenPairId) => {
+        await OAuth.destroy({ where: { tokenPairId: tokenPairId } });
+    },
 
-    findAccessToken: (accessToken) => dbRequest('SELECT * FROM oauth WHERE accessToken = ?', [accessToken]),
+    findAccessToken: async (accessToken) => {
+        return await OAuth.findOne({ where: { accessToken: accessToken } });
+    },
 
-    findRefreshToken: (refreshToken) => dbRequest('SELECT * FROM oauth WHERE refreshToken = ?', [refreshToken])
+    findRefreshToken: async (refreshToken) => {
+        return await OAuth.findOne({ where: { refreshToken: refreshToken } });
+    }
 };

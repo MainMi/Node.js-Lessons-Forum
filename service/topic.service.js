@@ -1,4 +1,6 @@
 const { Topic } = require('../models');
+const { Op } = require('sequelize');
+
 
 module.exports = {
     createTopic: async (userId, title, text) => {
@@ -27,32 +29,43 @@ module.exports = {
         }
     },
 
-    getTopicsPaginated: async (page, pageSize, skipDeleted = true) => {
+    getTopicsPaginated: async (filterQuery) => {
         try {
-            const offset = (page - 1) * pageSize;
-            const whereClause = skipDeleted ? { deletedByUser: null } : {};
-
+            const {
+                currentPage = 1,
+                pageSize = 5,
+                skipDeleted = true,
+                text = ''
+            } = filterQuery;
+    
+            const offset = (currentPage - 1) * pageSize;
+    
+            // Будуємо умову whereClause
+            const whereClause = {
+                ...skipDeleted && { deletedByUser: null },
+                ...text && { title: { [Op.like]: `%${text}%` } }
+            };
+    
             const totalCount = await Topic.count({ where: whereClause });
             const totalPages = Math.ceil(totalCount / pageSize);
-
+    
             const topics = await Topic.findAll({
                 where: whereClause,
                 limit: pageSize,
                 offset: offset
             });
-
-            const metadata = {
-                totalCount,
+    
+            return {
+                topics,
+                count: totalCount,
                 totalPages,
-                pageSize,
-                currentPage: page
+                currentPage
             };
-
-            return { topics, metadata };
         } catch (error) {
             throw new Error('Error getting paginated topics: ' + error.message);
         }
     },
+    
 
     deleteTopic: async (topicId, deletedByUser) => {
         try {

@@ -35,9 +35,9 @@ module.exports = {
     getCommentsPaginated: async (req, res) => {
         const topic = req.topic;
         const { topicId } = topic;
-        const { page, pageSize, skipDeleted } = req.query;
+        const { currentPage, pageSize, skipDeleted } = req.query;
 
-        const comments = await commentService.getCommentsPaginated(topicId, page, pageSize, skipDeleted);
+        const comments = await commentService.getCommentsPaginated(topicId, currentPage, pageSize, skipDeleted);
 
         res.json({ topic, ...comments });
     }

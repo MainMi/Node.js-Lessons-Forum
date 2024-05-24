@@ -38,9 +38,9 @@ module.exports = {
         }
     },
 
-    getCommentsPaginated: async (topicId, page, pageSize, skipDeleted = true) => {
+    getCommentsPaginated: async (topicId, currentPage, pageSize, skipDeleted = true) => {
         try {
-            const offset = (page - 1) * pageSize;
+            const offset = (currentPage - 1) * pageSize;
             const whereClause = skipDeleted ? { deletedByUser: null } : {};
 
             const totalCount = await Comment.count({ where: { topicId, ...whereClause } });
@@ -56,10 +56,15 @@ module.exports = {
                 totalCount,
                 totalPages,
                 pageSize,
-                currentPage: page
+                currentPage
             };
 
-            return { comments, metadata };
+            return {
+                comments,
+                count: totalCount,
+                totalPages,
+                currentPage
+            };
         } catch (error) {
             throw new Error('Error getting paginated comments: ' + error.message);
         }

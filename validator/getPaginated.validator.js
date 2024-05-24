@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
 const GetPaginated = Joi.object({
-    page: Joi.number()
+    currentPage: Joi.number()
         .integer()
         .positive()
         .default(1),
@@ -9,8 +9,9 @@ const GetPaginated = Joi.object({
         .integer()
         .min(5)
         .max(100)
-        .default(20),
-    skipDeleted: Joi.boolean().default(true)
+        .default(5),
+    skipDeleted: Joi.boolean().default(true),
+    text: Joi.string().max(200).min(0)
 }).required();
 
 module.exports = GetPaginated;

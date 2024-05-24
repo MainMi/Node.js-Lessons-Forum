@@ -33,9 +33,7 @@ module.exports = {
     },
 
     getTopicsPaginated: async (req, res) => {
-        const { page, pageSize, skipDeleted } = req.query;
-
-        const topics = await topicService.getTopicsPaginated(page, pageSize, skipDeleted);
+        const topics = await topicService.getTopicsPaginated(req.query);
 
         res.json(topics);
     }

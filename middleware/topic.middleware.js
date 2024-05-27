@@ -20,7 +20,6 @@ module.exports = {
         try {
             const { topicId } = req.params;
             const topic = await topicService.getTopic(topicId);
-
             if (!topic) {
                 throw new ApiError(...Object.values(TOPIC_IS_NOT_EXIST));
             }
@@ -54,6 +53,8 @@ module.exports = {
     isTopicOwnerOrAdmin: (req, res, next) => {
         try {
             const { user } = req.authUser;
+
+
 
             if (req.topic.userId !== user.userId && !user.isAdmin) {
                 throw new ApiError(...Object.values(ACCESS_DENIED));

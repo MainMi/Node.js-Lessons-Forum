@@ -10,13 +10,13 @@ module.exports = {
             const tokenPair = authService.generateTokenPair({ userId: user.userId });
             authService.createOauth(user.userId, tokenPair);
 
-            req.user = { user, ...tokenPair };
+            req.user = { user, tokenPair };
 
             user.hashedPassword = undefined;
 
             res.json({
                 user,
-                ...tokenPair,
+                tokenPair,
             }).status(200);
         } catch (e) {
             next(e);

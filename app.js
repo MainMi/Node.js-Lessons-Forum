@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv');
+const cors = require('cors');
 
 dotenv.config({ path: path.join(__dirname, '.env') });
 
@@ -8,6 +9,8 @@ const app = express();
 const config = require('./config/config');
 const renderType = require('./constants/renderType');
 const sequelize = require('./database')
+
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -17,10 +20,14 @@ app.set('view engine', 'ejs');
 const { User, Topic, Comment, OAuth } = require('./models');
 
 User.hasMany(Topic, { foreignKey: 'userId' });
-Topic.belongsTo(User, { foreignKey: 'userId' });
+Topic.belongsTo(User, { foreignKey: 'userId', as: 'createdByUser' });
+Topic.belongsTo(User, { foreignKey: 'editedByUserId', as: 'editedByUser' });
+Topic.belongsTo(User, { foreignKey: 'deletedByUserId', as: 'deletedByUser' });
 
 User.hasMany(Comment, { foreignKey: 'userId' });
-Comment.belongsTo(User, { foreignKey: 'userId' });
+Comment.belongsTo(User, { foreignKey: 'userId', as: 'createdByUser' });
+Comment.belongsTo(User, { foreignKey: 'editedByUserId', as: 'editedByUser' });
+Comment.belongsTo(User, { foreignKey: 'deletedByUserId', as: 'deletedByUser' });
 
 Topic.hasMany(Comment, { foreignKey: 'topicId' });
 Comment.belongsTo(Topic, { foreignKey: 'topicId' });
@@ -39,6 +46,7 @@ sequelize.sync({ force: false })
 const { apiRouter, frontendRouter } = require('./router');
 app.use('/api', apiRouter);
 app.use('/', frontendRouter);
+
 
 app.use(_mainErrorHandler);
 

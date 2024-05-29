@@ -1,4 +1,4 @@
-const { Topic } = require('../models');
+const { Topic, User } = require('../models');
 const { Op } = require('sequelize');
 
 
@@ -11,7 +11,28 @@ module.exports = {
                 text
             });
 
-            return createdTopic;
+            const populatedTopic = await createdTopic.reload({
+                include: [{
+                    model: User,
+                    attributes: ['userId', 'username', 'isAdmin'],
+                    as: 'createdByUser'
+                }, {
+                    model: User,
+                    attributes: ['userId', 'username', 'isAdmin'],
+                    as: 'editedByUser',
+                    required: false
+                }, {
+                    model: User,
+                    attributes: ['userId', 'username', 'isAdmin'],
+                    as: 'deletedByUser',
+                    required: false
+                }],
+                attributes: {
+                    exclude: ['userId', 'editedByUserId', 'deletedByUserId']
+                }
+            });
+
+            return populatedTopic;
         } catch (error) {
             throw new Error('Error creating topic: ' + error.message);
         }
@@ -20,7 +41,25 @@ module.exports = {
     getTopic: async (topicId) => {
         try {
             const topic = await Topic.findOne({
-                where: { topicId }
+                where: { topicId },
+                include: [{
+                    model: User,
+                    attributes: ['userId', 'username', 'isAdmin'],
+                    as: 'createdByUser'
+                }, {
+                    model: User,
+                    attributes: ['userId', 'username', 'isAdmin'],
+                    as: 'editedByUser',
+                    required: false
+                }, {
+                    model: User,
+                    attributes: ['userId', 'username', 'isAdmin'],
+                    as: 'deletedByUser',
+                    required: false
+                }],
+                attributes: {
+                    exclude: ['userId', 'editedByUserId', 'deletedByUserId']
+                }
             });
 
             return topic;
@@ -35,26 +74,46 @@ module.exports = {
                 currentPage = 1,
                 pageSize = 5,
                 skipDeleted = true,
-                text = ''
+                text = '',
+                userId = null
             } = filterQuery;
-    
+
             const offset = (currentPage - 1) * pageSize;
-    
-            // Будуємо умову whereClause
+
             const whereClause = {
-                ...skipDeleted && { deletedByUser: null },
-                ...text && { title: { [Op.like]: `%${text}%` } }
+                ...skipDeleted && { deletedByUserId: null },
+                ...text && { title: { [Op.like]: `%${text}%` } },
+                ...userId && { userId }
             };
-    
+
             const totalCount = await Topic.count({ where: whereClause });
             const totalPages = Math.ceil(totalCount / pageSize);
-    
+
             const topics = await Topic.findAll({
                 where: whereClause,
+                order: [['updatedAt', 'DESC']],
                 limit: pageSize,
-                offset: offset
+                offset: offset,
+                include: [{
+                    model: User,
+                    attributes: ['userId', 'username', 'isAdmin'],
+                    as: 'createdByUser'
+                }, {
+                    model: User,
+                    attributes: ['userId', 'username', 'isAdmin'],
+                    as: 'editedByUser',
+                    required: false
+                }, {
+                    model: User,
+                    attributes: ['userId', 'username', 'isAdmin'],
+                    as: 'deletedByUser',
+                    required: false
+                }],
+                attributes: {
+                    exclude: ['userId', 'editedByUserId', 'deletedByUserId']
+                }
             });
-    
+
             return {
                 topics,
                 count: totalCount,
@@ -65,12 +124,11 @@ module.exports = {
             throw new Error('Error getting paginated topics: ' + error.message);
         }
     },
-    
 
-    deleteTopic: async (topicId, deletedByUser) => {
+    deleteTopic: async (topicId, deletedByUserId) => {
         try {
             await Topic.update({
-                deletedByUser
+                deletedByUserId
             }, {
                 where: { topicId }
             });
@@ -81,12 +139,12 @@ module.exports = {
         }
     },
 
-    editTopic: async (topicId, editedByUser, newTitle, newText) => {
+    editTopic: async (topicId, editedByUserId, newTitle, newText) => {
         try {
             await Topic.update({
                 title: newTitle,
                 text: newText,
-                editedByUser
+                editedByUserId
             }, {
                 where: { topicId }
             });

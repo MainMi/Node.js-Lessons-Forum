@@ -1,5 +1,7 @@
 const sequelize = require('sequelize');
-const { Comment } = require('../models');
+const { Op } = sequelize;
+
+const { Comment, User } = require('../models');
 
 module.exports = {
     addComment: async (userId, topicId, text) => {
@@ -20,7 +22,28 @@ module.exports = {
                 text
             });
 
-            return comment;
+            const populatedComment = await comment.reload({
+                include: [{
+                    model: User,
+                    attributes: ['userId', 'username', 'isAdmin'],
+                    as: 'createdByUser'
+                }, {
+                    model: User,
+                    attributes: ['userId', 'username', 'isAdmin'],
+                    as: 'editedByUser',
+                    required: false
+                }, {
+                    model: User,
+                    attributes: ['userId', 'username', 'isAdmin'],
+                    as: 'deletedByUser',
+                    required: false
+                }],
+                attributes: {
+                    exclude: ['userId', 'editedByUserId', 'deletedByUserId']
+                }
+            });
+
+            return populatedComment;
         } catch (error) {
             throw new Error('Error adding comment: ' + error.message);
         }
@@ -29,7 +52,25 @@ module.exports = {
     getComment: async (topicId, commentId) => {
         try {
             const comment = await Comment.findOne({
-                where: { topicId, commentId }
+                where: { topicId, commentId },
+                include: [{
+                    model: User,
+                    attributes: ['userId', 'username', 'isAdmin'],
+                    as: 'createdByUser'
+                }, {
+                    model: User,
+                    attributes: ['userId', 'username', 'isAdmin'],
+                    as: 'editedByUser',
+                    required: false
+                }, {
+                    model: User,
+                    attributes: ['userId', 'username', 'isAdmin'],
+                    as: 'deletedByUser',
+                    required: false
+                }],
+                attributes: {
+                    exclude: ['userId', 'editedByUserId', 'deletedByUserId']
+                }
             });
 
             return comment;
@@ -38,26 +79,43 @@ module.exports = {
         }
     },
 
-    getCommentsPaginated: async (topicId, currentPage, pageSize, skipDeleted = true) => {
+    getCommentsPaginated: async (topicId, currentPage, pageSize, userId, text, skipDeleted = true) => {
         try {
             const offset = (currentPage - 1) * pageSize;
-            const whereClause = skipDeleted ? { deletedByUser: null } : {};
+
+            const whereClause = {
+                ...skipDeleted && { deletedByUserId: null },
+                ...text && { text: { [Op.like]: `%${text}%` } },
+                ...userId && { userId }
+            };
 
             const totalCount = await Comment.count({ where: { topicId, ...whereClause } });
+
             const totalPages = Math.ceil(totalCount / pageSize);
 
             const comments = await Comment.findAll({
                 where: { topicId, ...whereClause },
                 limit: pageSize,
-                offset: offset
+                offset: offset,
+                include: [{
+                    model: User,
+                    attributes: ['userId', 'username', 'isAdmin'],
+                    as: 'createdByUser'
+                }, {
+                    model: User,
+                    attributes: ['userId', 'username', 'isAdmin'],
+                    as: 'editedByUser',
+                    required: false
+                }, {
+                    model: User,
+                    attributes: ['userId', 'username', 'isAdmin'],
+                    as: 'deletedByUser',
+                    required: false
+                }],
+                attributes: {
+                    exclude: ['userId', 'editedByUserId', 'deletedByUserId']
+                }
             });
-
-            const metadata = {
-                totalCount,
-                totalPages,
-                pageSize,
-                currentPage
-            };
 
             return {
                 comments,
@@ -70,10 +128,46 @@ module.exports = {
         }
     },
 
-    deleteComment: async (topicId, commentId, deletedByUser) => {
+    getAllComments: async (topicId, userId, text, skipDeleted = true) => {
+        try {
+            const whereClause = {
+                ...skipDeleted && { deletedByUserId: null },
+                ...text && { text: { [Op.like]: `%${text}%` } },
+                ...userId && { userId }
+            };
+
+            const comments = await Comment.findAll({
+                where: { topicId, ...whereClause },
+                include: [{
+                    model: User,
+                    attributes: ['userId', 'username', 'isAdmin'],
+                    as: 'createdByUser'
+                }, {
+                    model: User,
+                    attributes: ['userId', 'username', 'isAdmin'],
+                    as: 'editedByUser',
+                    required: false
+                }, {
+                    model: User,
+                    attributes: ['userId', 'username', 'isAdmin'],
+                    as: 'deletedByUser',
+                    required: false
+                }],
+                attributes: {
+                    exclude: ['userId', 'editedByUserId', 'deletedByUserId']
+                }
+            });
+
+            return { comments };
+        } catch (error) {
+            throw new Error('Error getting all comments: ' + error.message);
+        }
+    },
+
+    deleteComment: async (topicId, commentId, deletedByUserId) => {
         try {
             await Comment.update({
-                deletedByUser
+                deletedByUserId
             }, {
                 where: { topicId, commentId }
             });
@@ -84,11 +178,11 @@ module.exports = {
         }
     },
 
-    editComment: async (topicId, commentId, editedByUser, newText) => {
+    editComment: async (topicId, commentId, editedByUserId, newText) => {
         try {
             await Comment.update({
                 text: newText,
-                editedByUser
+                editedByUserId
             }, {
                 where: { topicId, commentId }
             });

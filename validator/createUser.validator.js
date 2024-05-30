@@ -11,7 +11,9 @@ const UserSchema = Joi.object({
         .required()
         .trim()
         .lowercase(),
-    password: Joi.string().regex(regexEnum.REGEX_PASSWORD).required()
+    password: Joi.string()
+        .regex(regexEnum.REGEX_PASSWORD)
+        .required()
 }).required();
 
 module.exports = UserSchema;

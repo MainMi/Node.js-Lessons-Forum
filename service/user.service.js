@@ -56,5 +56,20 @@ module.exports = {
         } catch (error) {
             throw new Error('Error checking if user exists: ' + error.message);
         }
+    },
+
+    changePassword: async (userId, hashedPassword) => {
+        try {
+            const [affectedRows] = await User.update(
+                { hashedPassword },
+                { where: { userId } }
+            );
+
+            if (affectedRows === 0) {
+                throw new Error('User not found');
+            }
+        } catch (error) {
+            throw new Error('Error updating password: ' + error.message);
+        }
     }
 };

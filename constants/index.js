@@ -1,5 +1,4 @@
 module.exports = {
-    renderType: require('./renderType'),
-    studentsInfo: require('./studentsInfo'),
-    regexEnum: require('./regex.enum')
+    regexEnum: require('./regex.enum'),
+    tokenTypeEnum: require('./tokenType.enum')
 }

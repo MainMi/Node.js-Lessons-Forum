@@ -14,15 +14,15 @@ module.exports = {
         errorStatus: 4012,
         message: 'Wrong username or password'
     },
+    WRONG_PASSWORD: {
+        status: 401,
+        errorStatus: 4013,
+        message: 'Wrong password'
+    },
     ACCESS_DENIED: {
         status: 403,
         errorStatus: 4030,
         message: 'Access denied'
-    },
-    NOT_MODIFY_YOURSELF: {
-        status: 403,
-        errorStatus: 4031,
-        message: 'You can\'t modify it yourself.'
     },
     PARAMS_IS_NOT_FOUND_FN: (paramsName) => ({
         status: 404,

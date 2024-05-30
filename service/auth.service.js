@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const ApiError = require('../error/ErrorHandler');
 
 const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = require('../config/config');
-const { WRONG_USERNAME_OR_PASSWORD, NOT_VALID_TOKEN } = require('../error/errorMsg');
+const { WRONG_USERNAME_OR_PASSWORD, NOT_VALID_TOKEN, WRONG_PASSWORD } = require('../error/errorMsg');
 const { ACCESS } = require('../constants/tokenType.enum');
 
 const { OAuth } = require('../models');
@@ -12,11 +12,15 @@ const { OAuth } = require('../models');
 module.exports = {
     hashPassword: (password) => bcrypt.hash(password, 10),
 
-    comparePassword: async (password, hashPassword) => {
+    comparePassword: async (password, hashPassword, isLogin=true) => {
         const isPasswordEqual = await bcrypt.compare(password, hashPassword);
 
         if (!isPasswordEqual) {
-            throw new ApiError(...Object.values(WRONG_USERNAME_OR_PASSWORD));
+            if (isLogin) {
+                throw new ApiError(...Object.values(WRONG_USERNAME_OR_PASSWORD));
+            }
+
+            throw new ApiError(...Object.values(WRONG_PASSWORD));
         }
     },
 

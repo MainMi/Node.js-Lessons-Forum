@@ -1,4 +1,6 @@
 module.exports = {
-    apiRouter: require('./api.router'),
-    frontendRouter: require('./frontend.router')
+    authRouter: require('./auth.router'),
+    userRouter: require('./user.router'),
+    topicRouter: require('./topic.router'),
+    commentRouter: require('./comment.router')
 };

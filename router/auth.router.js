@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
-const { authController, userController } = require('../../controller');
-const { authMiddleware, userMiddleware } = require('../../middleware');
+const { authController, userController } = require('../controller');
+const { authMiddleware, userMiddleware } = require('../middleware');
 
 router.use(
     '/refresh',

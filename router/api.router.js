@@ -4,7 +4,7 @@ const {
     userRouter,
     topicRouter,
     commentRouter
-} = require('./api');
+} = require('.');
 
 router.use('/auth', authRouter);
 router.use('/users', userRouter);

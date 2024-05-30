@@ -5,7 +5,7 @@ module.exports = {
         try {
             const { user, body: { password } } = req;
 
-            await authService.comparePassword(password, user.hashedPassword);
+            await authService.comparePassword(password, user.hashedPassword, true);
 
             const tokenPair = authService.generateTokenPair({ userId: user.userId });
             authService.createOauth(user.userId, tokenPair);

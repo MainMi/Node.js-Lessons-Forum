@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
-const { commentController } = require('../../controller');
-const { authMiddleware, topicMiddleware, commentMiddleware, paginatorMiddleware } = require('../../middleware');
+const { commentController } = require('../controller');
+const { authMiddleware, topicMiddleware, commentMiddleware, paginatorMiddleware } = require('../middleware');
 
 router.post('/:topicId/add',
     authMiddleware.checkAccessToken,

@@ -7,15 +7,12 @@ dotenv.config({ path: path.join(__dirname, '.env') });
 
 const app = express();
 const config = require('./config/config');
-const renderType = require('./constants/renderType');
 const sequelize = require('./database')
 
 app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.set('view engine', 'ejs');
 
 const { User, Topic, Comment, OAuth } = require('./models');
 
@@ -43,20 +40,10 @@ sequelize.sync({ force: false })
         console.error('Error synchronizing database:', error);
     });
 
-const { apiRouter, frontendRouter } = require('./router');
+const apiRouter = require('./router/api.router');
 app.use('/api', apiRouter);
-app.use('/', frontendRouter);
-
 
 app.use(_mainErrorHandler);
-
-app.use(express.static(path.join(__dirname, '/views')));
-app.use(express.static(path.join(__dirname, '/public')));
-
-// app.use((req, res, next) => {
-//     const { path, title, message, cssPath } = renderType.error.notFound
-//     res.render( path, { title, message, cssPath })
-// });
 
 app.listen(config.PORT, () => {
     console.log(`Server running. Use our API on port: ${config.PORT}`);

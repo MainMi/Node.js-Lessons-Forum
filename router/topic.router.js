@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
-const { topicController } = require('../../controller');
-const { authMiddleware, topicMiddleware, paginatorMiddleware } = require('../../middleware');
+const { topicController } = require('../controller');
+const { authMiddleware, topicMiddleware, paginatorMiddleware } = require('../middleware');
 
 router.post('/create',
     authMiddleware.checkAccessToken,

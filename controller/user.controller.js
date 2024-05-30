@@ -16,6 +16,26 @@ module.exports = {
     },
 
     getUserInfo: (req, res) => {
-        res.json(req.authUser.user);
+        const { user } = req.authUser;
+
+        user.hashedPassword = undefined;
+
+        res.json(user);
+    },
+
+    changePassword: async (req, res) => {
+        try {
+            const { newPassword } = req.body;
+            const { user: { userId } } = req.authUser;
+
+            const hashedPassword = await authService.hashPassword(newPassword);
+
+            await userService.changePassword(userId, hashedPassword);
+            await authService.deleteTokensForUser(userId);
+
+            res.json('Password changed');
+        } catch (e) {
+            next(e);
+        }
     }
 };

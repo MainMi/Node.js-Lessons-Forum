@@ -27,11 +27,10 @@ const authUser = (required = true) => async (req, res, next) => {
         const tokenData = await authService.findAccessToken(token);
 
         if (!tokenData || !tokenData.userId) {
-            throw new  ApiError(...Object.values(NOT_VALID_TOKEN));
+            throw new ApiError(...Object.values(NOT_VALID_TOKEN));
         }
 
         tokenData.user = await userService.getUser(tokenData.userId);
-        tokenData.user.hashedPassword = undefined;
 
         req.authUser = tokenData;
 

@@ -1,14 +1,15 @@
 const ApiError = require('../error/ErrorHandler');
 
-const { createUserValidator } = require('../validator');
-const { userService } = require('../service');
+const { createUserValidator, changePasswordValidator } = require('../validator');
+const { userService, authService } = require('../service');
 const {
     USER_OR_EMAIL_IS_CREATED,
     PARAMS_IS_NOT_FOUND,
     ACCESS_DENIED,
-    NOT_MODIFY_YOURSELF,
     WRONG_USERNAME_OR_PASSWORD
 } = require('../error/errorMsg');
+
+const { validateWith } = require('../helpers');
 
 const isUserAdmin = (req) => !!req?.authUser?.user?.isAdmin;
 
@@ -62,31 +63,6 @@ module.exports = {
         }
     },
 
-    isChangeYourself: (
-        pathArr = [
-            'body',
-            'authUser'
-        ],
-        parameterArr = [
-            'userId',
-            'userId'
-        ]
-    ) => (req, res, next) => {
-        try {
-            const [ firstPath, secondPath ] = pathArr;
-            const [ firstParameter, secondParameter ] = parameterArr;
-            const firstParam = req[firstPath][firstParameter];
-            const secondParam = req[secondPath][secondParameter];
-
-            if (firstParam == secondParam) {
-                throw new ApiError(...Object.values(NOT_MODIFY_YOURSELF));
-            }
-            next();
-        } catch (e) {
-            next(e);
-        }
-    },
-
     isAdmin: (req, res, next) => {
         try {
             if (!isUserAdmin(req)) {
@@ -109,5 +85,20 @@ module.exports = {
         } catch (e) {
             next(e);
         }
-    }
+    },
+
+    isChangePasswordParamsValid: validateWith(changePasswordValidator),
+
+    isPasswordValid: async (req, res, next) => {
+        try {
+            const { password } = req.body;
+            const { user } = req.authUser;
+
+            await authService.comparePassword(password, user.hashedPassword, false);
+
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
 };

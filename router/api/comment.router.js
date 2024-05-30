@@ -12,6 +12,15 @@ router.post('/:topicId/add',
     commentController.addComment
 );
 
+router.get('/:topicId/all',
+    authMiddleware.authIfTokenProvided,
+    topicMiddleware.isTopicParamsValid,
+    paginatorMiddleware.isAllRecordsParamsValid,
+    paginatorMiddleware.isAdminIfDeletedDataRequested,
+    topicMiddleware.getTopicInfo,
+    commentController.getAllComments
+);
+
 router.get('/:topicId/:commentId',
     authMiddleware.authIfTokenProvided,
     commentMiddleware.isCommentParamsValid,

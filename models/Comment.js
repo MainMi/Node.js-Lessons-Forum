@@ -18,8 +18,8 @@ const Comment = sequelize.define('Comment', {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    editedByUser: DataTypes.INTEGER,
-    deletedByUser: DataTypes.INTEGER
+    editedByUserId: DataTypes.INTEGER,
+    deletedByUserId: DataTypes.INTEGER
 }, {
     primaryKeyConstraint: true
 });

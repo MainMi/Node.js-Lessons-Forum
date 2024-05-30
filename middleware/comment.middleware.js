@@ -36,7 +36,7 @@ module.exports = {
         try {
             const { user } = req.authUser;
 
-            if (req.comment.userId !== user.userId) {
+            if (req.comment.createdByUser.userId !== user.userId) {
                 throw new ApiError(...Object.values(ACCESS_DENIED));
             }
 
@@ -50,7 +50,7 @@ module.exports = {
         try {
             const { user } = req.authUser;
 
-            if (req.comment.userId !== user.userId && !user.isAdmin) {
+            if (req.comment.createdByUser.userId !== user.userId && !user.isAdmin) {
                 throw new ApiError(...Object.values(ACCESS_DENIED));
             }
 

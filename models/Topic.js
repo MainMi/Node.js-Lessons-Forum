@@ -7,6 +7,10 @@ const Topic = sequelize.define('Topic', {
         primaryKey: true,
         autoIncrement: true
     },
+    userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
     title: {
         type: DataTypes.STRING(255),
         allowNull: false
@@ -15,8 +19,8 @@ const Topic = sequelize.define('Topic', {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    editedByUser: DataTypes.INTEGER,
-    deletedByUser: DataTypes.INTEGER
+    editedByUserId: DataTypes.INTEGER,
+    deletedByUserId: DataTypes.INTEGER
 });
 
 module.exports = Topic;

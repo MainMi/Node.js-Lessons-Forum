@@ -101,7 +101,7 @@ module.exports = {
 
     checkIfAdminDynamically: (param1, param2) => (req, res, next) => {
         try {
-            if (req?.param1?.param2 && !isUserAdmin(req)) {
+            if (!req[param1][param2] && !isUserAdmin(req)) {
                 throw new ApiError(...Object.values(ACCESS_DENIED));
             }
 

@@ -1,14 +1,4 @@
 module.exports = {
-    TOPIC_UNCHANGED: {
-        status: 304,
-        errorCode: 3040,
-        message: 'The new topic title and text match the existing data.'
-    },
-    COMMENT_UNCHANGED: {
-        status: 304,
-        errorCode: 3041,
-        message: 'The new comment text match the existing data.'
-    },
     NOT_VALID_TOKEN: {
         status: 401,
         errorStatus: 4010,
@@ -63,6 +53,16 @@ module.exports = {
         status: 404,
         errorStatus: 4045,
         message: 'Comment was deleted'
+    },
+    TOPIC_UNCHANGED: {
+        status: 404,
+        errorCode: 4046,
+        message: 'The new topic title and text match the existing data.'
+    },
+    COMMENT_UNCHANGED: {
+        status: 404,
+        errorCode: 4047,
+        message: 'The new comment text match the existing data.'
     },
     USER_OR_EMAIL_IS_CREATED: {
         status: 409,
